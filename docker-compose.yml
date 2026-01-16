@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    # Just for dev, we can override command to run dev server if needed, 
+    # but usually we'll build for prod in docker or use a dev container. 
+    # For now, let's assume we might want to run dev mode.
+    # But standard Dockerfile usually builds prod. 
+    # Let's create a Dockerfile that allows dev or prod.
+    # For now, I'll rely on the default Dockerfile for prod build in frontend.

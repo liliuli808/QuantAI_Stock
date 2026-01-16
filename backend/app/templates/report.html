@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Stock Analysis Report - {{ analysis.ticker }}</title>
+    <style>
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.6; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px; }
+        .section-title { font-size: 18px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 5px; }
+        .score-box { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .signal { font-weight: bold; color: #e74c3c; }
+        .success { color: #27ae60; }
+        .warning { color: #f39c12; }
+        .danger { color: #c0392b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>QuantAI Stock Analysis Report</h1>
+        <p>Ticker: <strong>{{ analysis.ticker }}</strong> | Date: {{ analysis.analysis_date[:10] }}</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">1. Technical Analysis (Weight 40%)</div>
+        <div class="score-box">Score: {{ "%.1f"|format(analysis.tech_score) }}/100</div>
+        <p>Signal: <span class="signal {{ 'success' if analysis.tech_score > 60 else 'danger' }}">{{ analysis.tech_signal }}</span></p>
+        <table>
+            <tr><th>Indicator</th><th>Value</th></tr>
+            <tr><td>RSI</td><td>{{ "%.2f"|format(analysis.indicators.RSI) }}</td></tr>
+            <tr><td>MACD</td><td>{{ "%.2f"|format(analysis.indicators.MACD) }}</td></tr>
+            <tr><td>Bollinger High/Low</td><td>{{ "%.2f"|format(analysis.indicators.BB_High) }} / {{ "%.2f"|format(analysis.indicators.BB_Low) }}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. Market Sentiment (Weight 30%)</div>
+        <div class="score-box">Score: {{ "%.1f"|format(analysis.sentiment_score) }}/100</div>
+        <p>{{ analysis.sentiment_summary }}</p>
+        <ul>
+        {% for headline in analysis.news_headlines %}
+            <li>{{ headline }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. Investment Advice (Weight 20%)</div>
+        <p>Action: <strong>{{ analysis.advice_action }}</strong></p>
+        <p>{{ analysis.advice_rationale }}</p>
+        {% if analysis.entry_point %}
+        <p>Suggested Entry: {{ "%.2f"|format(analysis.entry_point) }}</p>
+        {% endif %}
+        {% if analysis.exit_point %}
+        <p>Target/Stop: {{ "%.2f"|format(analysis.exit_point) }}</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <div class="section-title">4. Summary (Weight 10%)</div>
+        <p>{{ analysis.summary_text }}</p>
+    </div>
+</body>
+</html>
