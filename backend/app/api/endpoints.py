@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
 from app.models.schemas import StockRequest, AnalysisResponse, ReportRequest
-from app.services.data_fetcher import YFinanceFetcher, StockDataFetcher
+from app.services.data_fetcher import AkShareFetcher, StockDataFetcher
 from app.services.analyzer import TechnicalAnalyzer
 from app.services.sentiment import SentimentAnalyzer
 from app.services.advisor import InvestmentAdvisor
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Dependency injection for services
 def get_data_fetcher():
-    return YFinanceFetcher()
+    return AkShareFetcher()
 
 def get_analyzer():
     return TechnicalAnalyzer()
